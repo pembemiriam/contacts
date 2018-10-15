@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.Optional;
 
 @RestController
 public class ContactController {
@@ -28,13 +29,14 @@ public class ContactController {
     }
 
     @RequestMapping(method=RequestMethod.GET, value="/contacts/{id}")
-    public Contact show(@PathVariable String id) {
-        return contactRepository.findOne(id);
+    public Optional<Contact> show(@PathVariable String id) {
+        return contactRepository.findById(id);
     }
 
     @RequestMapping(method=RequestMethod.PUT, value="/contacts/{id}")
     public Contact update(@PathVariable String id, @RequestBody Contact contact) {
-        Contact c = contactRepository.findOne(id);
+        Optional<Contact> optcontact = contactRepository.findById(id);
+        Contact c = optcontact.get();
         if(contact.getName() != null)
             c.setName(contact.getName());
         if(contact.getAddress() != null)
@@ -46,12 +48,13 @@ public class ContactController {
         if(contact.getEmail() != null)
             c.setEmail(contact.getEmail());
         contactRepository.save(c);
-        return contact;
+        return c;
     }
 
     @RequestMapping(method=RequestMethod.DELETE, value="/contacts/{id}")
     public String delete(@PathVariable String id) {
-        Contact contact = contactRepository.findOne(id);
+        Optional<Contact> optcontact = contactRepository.findById(id);
+        Contact contact = optcontact.get();
         contactRepository.delete(contact);
 
         return "";
