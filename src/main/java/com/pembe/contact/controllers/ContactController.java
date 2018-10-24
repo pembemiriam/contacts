@@ -2,16 +2,18 @@ package com.pembe.contact.controllers;
 
 import com.pembe.contact.models.Contact;
 import com.pembe.contact.repositories.ContactRepository;
+import com.pembe.contact.service.SmsSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.Optional;
 
 @RestController
 public class ContactController {
+
+    @Autowired
+    private SmsSenderService  service;
+
 
     @Autowired
     ContactRepository contactRepository;
@@ -21,6 +23,8 @@ public class ContactController {
         return contactRepository.findAll();
     }
 
+
+    @CrossOrigin
     @RequestMapping(method=RequestMethod.POST, value="/contacts")
     public Contact save(@RequestBody Contact contact) {
         contactRepository.save(contact);
@@ -28,11 +32,14 @@ public class ContactController {
         return contact;
     }
 
+    @CrossOrigin
     @RequestMapping(method=RequestMethod.GET, value="/contacts/{id}")
     public Optional<Contact> show(@PathVariable String id) {
         return contactRepository.findById(id);
     }
 
+
+    @CrossOrigin
     @RequestMapping(method=RequestMethod.PUT, value="/contacts/{id}")
     public Contact update(@PathVariable String id, @RequestBody Contact contact) {
         Optional<Contact> optcontact = contactRepository.findById(id);
@@ -51,6 +58,12 @@ public class ContactController {
         return c;
     }
 
+    @RequestMapping(value="/send/sms/{message}/{number}")
+    public void sendSms(@PathVariable String message, String number){
+        this.service.sendSms(message, number);
+    }
+
+    @CrossOrigin
     @RequestMapping(method=RequestMethod.DELETE, value="/contacts/{id}")
     public String delete(@PathVariable String id) {
         Optional<Contact> optcontact = contactRepository.findById(id);
@@ -59,4 +72,8 @@ public class ContactController {
 
         return "";
     }
+
+
+
+
 }
