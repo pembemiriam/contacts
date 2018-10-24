@@ -9,16 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class SmsSenderService {
 
-    public static void main(String[] args) {
-
-         SmsSenderService send = new SmsSenderService();
-
-         send.sendSms("Hello", "+237671840646");
-
-
-    }
-
-
     public static final String ACCOUNT_SID =
             "AC0e9ad9997e2269ac844df8adca93f455";
     public static final String AUTH_TOKEN =
